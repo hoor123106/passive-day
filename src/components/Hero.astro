@@ -1,0 +1,105 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/hero.css';
+import TrendingArticlesSidebar from './TrendingArticlesSidebar.astro';
+
+
+import heroImage from '../assets/images/heroImage.png';
+
+// 1. Fetch data
+const articles = await getCollection('articles');
+
+// 2. Filter and Sort Featured Articles (Segment F + Home Y)
+const featuredFArticles = articles
+    .filter(a => 
+        a.data.Segment?.toUpperCase() === 'F' && 
+        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+    )
+    .sort((a, b) => {
+        const orderA = parseInt(a.data.Order) || 999;
+        const orderB = parseInt(b.data.Order) || 999;
+        return orderA - orderB;
+    });
+
+// 3. Define our slots
+const mainFeatured = featuredFArticles[0];
+const secondaryFeatures = featuredFArticles.slice(1, 4);
+
+
+---
+
+<section class="hero-section">
+    <div class="container">
+        <div class="main-layout">
+            
+            <!-- LEFT SIDE: FEATURE STORY -->
+            <div class="feature-story">
+                <div class="section-label">
+                    <span class="label-line"></span>
+                    <span class="label-text">FEATURE STORY</span>
+                </div>
+
+                {mainFeatured && (
+                    <div class="feature-content">
+                        <a href={`/articles/${mainFeatured.data.slug || mainFeatured.id}`} class="feature-image-link">
+                            <div class="feature-image-wrapper">
+                                <img src={heroImage.src} alt={mainFeatured.data.title} class="feature-img" />
+                            </div>
+                        </a>
+                        
+                        <div class="feature-info">
+                            <a href={`/articles/${mainFeatured.data.slug || mainFeatured.id}`}>
+                                <h2>{mainFeatured.data.title}</h2>
+                            </a>
+                            <p class="feature-excerpt">{mainFeatured.data["Meta Description"]}</p>
+                            <div class="feature-meta">
+                                <span class="author-avatar">{mainFeatured.data["Author Name"]?.charAt(0)}</span>
+                                <span class="author-name">{mainFeatured.data["Author Name"]}</span>
+                                <span class="meta-dot"></span>
+                                <span class="meta-date">{mainFeatured.data.Date}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {secondaryFeatures.length > 0 && (
+                    <div class="secondary-grid-wrapper">
+                        <div class="secondary-grid">
+                            {secondaryFeatures.map(article => (
+                                <div class="secondary-card">
+                                    <a href={`/articles/${article.data.slug || article.id}`} class="secondary-image-link">
+                                        <div class="secondary-image-wrapper">
+                                            <img src={heroImage.src} alt={article.data.title} class="secondary-img" />
+                                        </div>
+                                    </a>
+                                    <div class="secondary-info">
+                                        <span class="secondary-cat">{article.data.Category}</span>
+                                        <a href={`/articles/${article.data.slug || article.id}`}>
+                                            <h3>{article.data.title}</h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <!-- RIGHT SIDE: TRENDING & NEWSLETTER -->
+            <aside class="sidebar">
+                <TrendingArticlesSidebar />
+
+
+                <div class="widget newsletter-widget">
+                    <h3>Intelligence Report</h3>
+                    <p>Get weekly alpha on income streams delivered to your inbox.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" required />
+                        <button type="submit">SUBSCRIBE</button>
+                    </form>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</section>

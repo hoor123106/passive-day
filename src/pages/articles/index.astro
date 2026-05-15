@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/articlesIndex.css';
+
+const articles = await getCollection('articles');
+
+// --- CLOUDINARY CONFIGURATION ---
+const CLOUDINARY_BASE = "https://res.cloudinary.com/creyo-com/image/upload/v1776686100/mimya/blog/";
+const FALLBACK_IMAGE = `${CLOUDINARY_BASE}blog-placeholder.webp`;
+---
+
+<Layout title="All Articles | PassiveDay" description="Browse all our articles on passive income, digital products, and more.">
+    <section class="page-header">
+        <div class="container fade-in-up">
+            <h1>All <span class="gradient-text">Articles</span></h1>
+            <p>Explore our full library of insights and strategies.</p>
+        </div>
+    </section>
+
+    <section class="articles-grid container">
+        <div class="grid">
+            {articles.map((article) => (
+                <a href={`/articles/${article.data.slug || article.id}`} class="article-card fade-in-up">
+                    <div class="card-image">
+                        <img 
+                            src={article.data["Image Featured"] ? `${CLOUDINARY_BASE}${article.data["Image Featured"]}` : FALLBACK_IMAGE} 
+                            alt={article.data["Image ALT"] || article.data.title}
+                            onerror={`this.src='${FALLBACK_IMAGE}'; this.onerror=null;`}
+                        />
+                        <span class="category-tag">{article.data.Category || 'Article'}</span>
+                    </div>
+                    <div class="card-content">
+                        <span class="date">{article.data.Date}</span>
+                        <h3>{article.data.title}</h3>
+                        <p>{article.data["Meta Description"]?.substring(0, 100)}...</p>
+                        <span class="read-more">Read Article <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </section>
+</Layout>

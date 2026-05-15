@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/editor-picks.css';
+
+import heroImage from '../assets/images/heroImage.png';
+
+// 1. Fetch data
+const articles = await getCollection('articles');
+
+// 2. Filter and Sort Editor Picks (Segment E + Home Y)
+const editorPicks = articles
+    .filter(a => 
+        a.data.Segment?.toUpperCase() === 'E' && 
+        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+    )
+    .sort((a, b) => {
+        const orderA = parseInt(a.data.Order) || 999;
+        const orderB = parseInt(b.data.Order) || 999;
+        return orderA - orderB;
+    })
+    .slice(0, 3); // Show 3 articles
+---
+
+{editorPicks.length > 0 && (
+    <section class="editor-picks-section">
+        <div class="container">
+            <div class="picks-header">
+                <span class="picks-header-line"></span>
+                <h2>Editor's Picks</h2>
+            </div>
+            
+            <div class="picks-grid">
+                {editorPicks.map((article, index) => (
+                    <article class={`pick-card ${index === 0 ? 'pick-featured' : 'pick-standard'}`}>
+                        <a href={`/articles/${article.data.slug || article.id}`} class="pick-image-link">
+                            <div class="pick-image-wrapper">
+                                <img src={heroImage.src} alt={article.data.title} class="pick-img" />
+                            </div>
+                        </a>
+                        <div class="pick-content">
+                            <span class="pick-category">{article.data.Category}</span>
+                            <a href={`/articles/${article.data.slug || article.id}`}>
+                                <h3>{article.data.title}</h3>
+                            </a>
+                            {index === 0 && (
+                                <p class="pick-excerpt">{article.data["Meta Description"]}</p>
+                            )}
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </div>
+    </section>
+)}

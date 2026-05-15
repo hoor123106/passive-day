@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/market-analysis.css';
+import img1 from '../assets/images/1-marketAnalysis_image.png';
+import img2 from '../assets/images/2-marketAnalysis_image.png';
+import img3 from '../assets/images/3-marketAnalysis_image.png';
+
+const images = [img1, img2, img3];
+
+// 1. Fetch data
+const articles = await getCollection('articles');
+
+// 2. Filter and Sort Market Analysis (Segment M + Home Y)
+const marketArticles = articles
+    .filter(a => 
+        a.data.Segment?.toUpperCase() === 'M' && 
+        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+    )
+    .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999))
+    .slice(0, 3);
+---
+
+<section class="market-analysis-section relative">
+    
+    <div class="container">
+        <div class="market-header">
+            <div class="market-header-left">
+                <h2 class="market-title">Market Analysis</h2>
+                <p class="market-subtitle">Deep dives into the numbers that matter.</p>
+            </div>
+            <a href="/reports" class="view-all-reports-link">
+                View all reports 
+                <span class="arrow-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" />
+                    </svg>
+                </span>
+            </a>
+        </div>
+        
+        <div class="market-grid">
+            {marketArticles.map((article, index) => (
+                <article class="market-card group">
+                    <a href={`/articles/${article.data.slug || article.id}`} class="market-image-link">
+                        <div class="market-image-wrapper editorial-shadow">
+                            <img src={images[index]?.src || images[0].src} alt={article.data.title} class="market-img" />
+                            <div class="hover-overlay"></div>
+                        </div>
+                    </a>
+                    <div class="market-content">
+                        <span class="market-category">{article.data.Category}</span>
+                        <a href={`/articles/${article.data.slug || article.id}`}>
+                            <h3 class="market-card-title">{article.data.title}</h3>
+                        </a>
+                        <p class="market-excerpt">{article.data["Meta Description"]}</p>
+                    </div>
+                </article>
+            ))}
+        </div>
+    </div>
+</section>
+

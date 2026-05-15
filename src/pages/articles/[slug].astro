@@ -1,0 +1,104 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/articlesSlug.css';
+import TrendingArticlesSidebar from '../../components/TrendingArticlesSidebar.astro';
+import EditorPicks from '../../components/EditorPicks.astro';
+import LatestArticles from '../../components/LatestArticles.astro';
+import MarketAnalysis from '../../components/MarketAnalysis.astro';
+import CTA from '../../components/CTA.astro';
+
+
+export async function getStaticPaths() {
+    const articles = await getCollection('articles');
+    return articles.map(article => ({
+        params: { slug: article.data.slug || article.id },
+        props: { article },
+    }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const allArticles = await getCollection('articles');
+
+// --- CLOUDINARY CONFIGURATION ---
+const CLOUDINARY_BASE = "https://res.cloudinary.com/creyo-com/image/upload/v1776686100/mimya/blog/";
+const FALLBACK_IMAGE = `${CLOUDINARY_BASE}blog-placeholder.webp`;
+
+// SEO Data
+const articleData = {
+    title: article.data.title || article.data.Title,
+    description: article.data["Meta Description"] || article.data["Meta-Description"],
+    image: article.data["Image Featured"] ? `${CLOUDINARY_BASE}${article.data["Image Featured"]}` : FALLBACK_IMAGE,
+    author: article.data["Author Name"] || 'PassiveDay Team',
+    datePublished: article.data.Date || new Date().toISOString()
+};
+
+const seoTitle = article.data["Meta Title"] || article.data.title;
+const seoDescription = article.data["Meta Description"];
+
+// --- RESERVED KEYS FOR DYNAMIC SECTIONS ---
+const reserved = [
+    'title', 'slug', 'Date', 'Category', 'Meta Title', 'Meta Description', 
+    'Image Featured', 'Image ALT', 'Author ID', 'Author Name', 'Featured', 
+    'Popular', 'Editor Pick', 'HomePage', 'Tags', 'Publish', 'ID', 'Slug', 'Title',
+    'Meta-Title', 'Meta-Description', 'Home', 'Segment', 'Order'
+];
+---
+
+<Layout title={`${seoTitle} | PassiveDay`} description={seoDescription}>
+    <div class="article-layout container">
+        <article class="article-main">
+            <header class="article-header">
+                <div class="meta-info fade-in-up">
+                    <span class="category-pill">{article.data.Category}</span>
+                    <span class="date">{article.data.Date}</span>
+                </div>
+                <h1 class="fade-in-up">{article.data.title}</h1>
+                <p class="author fade-in-up">By {article.data["Author Name"] || 'PassiveDay Team'}</p>
+            </header>
+
+            <div class="featured-image fade-in-up">
+                <img 
+                    src={article.data["Image Featured"] ? `${CLOUDINARY_BASE}${article.data["Image Featured"]}` : FALLBACK_IMAGE} 
+                    alt={article.data["Image ALT"] || article.data.title}
+                    onerror={`this.src='${FALLBACK_IMAGE}'; this.onerror=null;`}
+                />
+            </div>
+
+            <div class="article-body fade-in-up">
+                <div class="main-content">
+                    <Content />
+                </div>
+
+                {/* DYNAMIC SECTIONS FROM SHEET COLUMNS */}
+                {Object.entries(article.data).map(([key, value]) => {
+                    const isTechnical = key.toLowerCase().startsWith('column ');
+                    if (!reserved.includes(key) && !isTechnical && value && typeof value === 'string' && value.trim()) {
+                        const sectionTitle = key.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        return (
+                            <section class="dynamic-section" id={`section-${key}`}>
+                                <h2 class="dynamic-header">{sectionTitle}</h2>
+                                <div class="section-content" set:html={value} />
+                            </section>
+                        );
+                    }
+                    return null;
+                })}
+            </div>
+
+        </article>
+
+        <aside class="article-sidebar">
+            <TrendingArticlesSidebar />
+        </aside>
+    </div>
+
+    <div class="article-bottom-sections">
+        <EditorPicks />
+        <LatestArticles />
+        <MarketAnalysis />
+        <CTA />
+    </div>
+
+</Layout>

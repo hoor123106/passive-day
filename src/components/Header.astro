@@ -1,0 +1,54 @@
+---
+import '../styles/header.css';
+
+const navLinks = [
+    { name: 'DIGITAL PRODUCTS', href: '/digital-products' },
+    { name: 'AFFILIATE MARKETING', href: '/affiliate-marketing' },
+    { name: 'REAL ESTATE', href: '/real-estate' },
+    { name: 'CRYPTO', href: '/crypto' },
+    { name: 'ECOMMERCE', href: '/ecommerce' },
+    { name: 'STOCK MARKET', href: '/stock-market' },
+];
+---
+
+<header class="site-header">
+    <div class="header-container">
+        <div class="header-left">
+            <!-- Mobile Menu Toggle -->
+            <button class="menu-toggle" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+
+            <!-- Logo Area -->
+            <a href="/" class="logo">
+                <div class="logo-box">
+                    <span class="p-letter">P</span>
+                </div>
+                <span class="logo-text">PASSIVEDAY</span>
+            </a>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="main-nav">
+            <ul>
+                {navLinks.map(link => (
+                    <li>
+                        <a href={link.href} class={link.active ? 'active' : ''}>
+                            {link.name}
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </nav>
+
+        <!-- Right Side Icons -->
+        <div class="header-actions">
+            <button class="icon-btn" aria-label="Search">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <button class="icon-btn" aria-label="Account">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </button>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import EditorPicks from '../components/EditorPicks.astro';
+import LatestRealEstate from '../components/Latest-RealEstate-Articles.astro';
+import LatestArticles from '../components/LatestArticles.astro';
+import MarketAnalysis from '../components/MarketAnalysis.astro';
+import CTA from '../components/CTA.astro';
+import '../styles/homepage.css';
+
+// The Hero component now handles its own data fetching and logic
+---
+
+<Layout>
+    <Hero />
+    <EditorPicks />
+    <LatestRealEstate />
+    <LatestArticles />
+    <MarketAnalysis />
+    <CTA />
+    
+    {/* Additional homepage sections can be added here */}
+</Layout>

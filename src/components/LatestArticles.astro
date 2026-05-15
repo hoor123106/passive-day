@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/latest-articles.css';
+
+// 1. Fetch data
+const articles = await getCollection('articles');
+
+// 2. Filter and Sort Latest Articles (Segment L + Home Y)
+const latestArticles = articles
+    .filter(a => 
+        a.data.Segment?.toUpperCase() === 'L' && 
+        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+    )
+    .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime())
+    .slice(0, 4);
+
+// Function to format date as "X hours ago" or similar is complex without a lib, 
+// so we'll just show the date or a simplified version.
+const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+---
+
+<section class="latest-articles-section">
+    <div class="container">
+        <div class="latest-header">
+            <div class="header-left">
+                <span class="header-line"></span>
+                <h2>Latest Articles</h2>
+            </div>
+            <a href="/news" class="view-all-link">VIEW ALL NEWS</a>
+        </div>
+        
+        <div class="latest-grid">
+            {latestArticles.map(article => (
+                <article class="latest-card">
+                    <div class="latest-content">
+                        <span class="latest-category">{article.data.Category}</span>
+                        <a href={`/articles/${article.data.slug || article.id}`}>
+                            <h3>{article.data.title}</h3>
+                        </a>
+                        <p class="latest-excerpt">{article.data["Meta Description"]}</p>
+                        <span class="latest-date">{formatDate(article.data.Date)}</span>
+                    </div>
+                </article>
+            ))}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,95 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/latest-real-estate.css';
+import heroImage from '../assets/images/heroImage.png';
+
+// 1. Fetch data
+const articles = await getCollection('articles');
+
+// 2. Logic for Real Estate (Segment R + Home Y + Latest Dates)
+const realEstateArticles = articles
+    .filter(a => 
+        a.data.Segment?.toUpperCase() === 'R' && 
+        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+    )
+    .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime())
+    .slice(0, 3);
+
+// 3. Logic for Most Popular (Segment P + Home Y)
+const popularArticles = articles
+    .filter(a => 
+        a.data.Segment?.toUpperCase() === 'P' && 
+        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+    )
+    .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999))
+    .slice(0, 5);
+---
+
+<section class="latest-re-section">
+    <div class="container">
+        <div class="re-main-grid">
+            
+            <!-- LEFT: Latest in Real Estate -->
+            <div class="re-column">
+                <div class="section-header">
+                    <span class="header-line"></span>
+                    <h2>Latest in Real Estate</h2>
+                </div>
+                
+                <div class="re-list">
+                    {realEstateArticles.map(article => (
+                        <article class="re-item">
+                            <a href={`/articles/${article.data.slug || article.id}`} class="re-image-link">
+                                <div class="re-image-wrapper">
+                                    <img src={heroImage.src} alt={article.data.title} />
+                                </div>
+                            </a>
+                            <div class="re-content">
+                                <span class="re-category">{article.data.Category}</span>
+                                <a href={`/articles/${article.data.slug || article.id}`}>
+                                    <h3>{article.data.title}</h3>
+                                </a>
+                                <p class="re-excerpt">{article.data["Meta Description"]}</p>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+            </div>
+
+            <!-- RIGHT: Most Popular -->
+            <div class="popular-column">
+                <div class="section-header popular-header-top">
+                    <div class="header-with-icon">
+                        <svg class="popular-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#cc0000" stroke="#cc0000"/>
+                        </svg>
+                        <h2>Most Popular</h2>
+                    </div>
+                </div>
+
+                <div class="popular-list">
+                    {popularArticles.map((article, index) => (
+                        <div class="popular-item">
+                            <span class="popular-number">0{index + 1}</span>
+                            <div class="popular-info">
+                                <a href={`/articles/${article.data.slug || article.id}`}>
+                                    <h4>{article.data.title}</h4>
+                                </a>
+                                <div class="popular-meta">
+                                    <span class="pop-cat">{article.data.Category}</span>
+                                    <span class="pop-dot"></span>
+                                    <span class="pop-read">12 MIN READ</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div class="view-all-container">
+                    <a href="/news" class="view-all-btn">VIEW ALL NEWS</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

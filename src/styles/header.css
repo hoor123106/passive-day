@@ -1,0 +1,161 @@
+.site-header {
+    background: #fffcf9;
+    border-top: 3px solid #1a1a1a;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    width: 100%;
+}
+
+.header-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo-box {
+    background: #000;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-box::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: 70%;
+    background: #e11d48;
+    border-radius: 50% 0 0 0;
+}
+
+.p-letter {
+    color: #fff;
+    font-weight: 900;
+    font-size: 20px;
+    z-index: 1;
+    font-family: serif;
+}
+
+.logo-text {
+    color: #e11d48;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    font-size: 16px;
+}
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #57534e;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    transition: color 0.3s ease;
+    padding: 8px 0;
+    position: relative;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+    color: #e11d48;
+}
+
+.main-nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #e11d48;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.icon-btn,
+.menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1a1a1a;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+}
+
+.icon-btn:hover,
+.menu-toggle:hover {
+    opacity: 0.7;
+}
+
+.menu-toggle {
+    display: flex;
+}
+
+@media (max-width: 1024px) {
+    .header-container {
+        padding: 0 20px;
+    }
+
+    .main-nav {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        padding: 0 16px;
+    }
+
+    .header-left {
+        gap: 12px;
+    }
+
+    .header-actions {
+        gap: 8px;
+    }
+
+    .logo-text {
+        font-size: 16px;
+    }
+}
