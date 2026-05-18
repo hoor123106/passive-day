@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import '../styles/latest-real-estate.css';
-import heroImage from '../assets/images/heroImage.png';
+import { resolveArticleImage } from '../utils/imageResolver';
 
 // 1. Fetch data
 const articles = await getCollection('articles');
@@ -41,7 +41,7 @@ const popularArticles = articles
                         <article class="re-item">
                             <a href={`/articles/${article.data.slug || article.id}`} class="re-image-link">
                                 <div class="re-image-wrapper">
-                                    <img src={heroImage.src} alt={article.data.title} />
+                                    <img src={resolveArticleImage(article.data["Image Featured"] || article.data.Image).src} alt={article.data.title} />
                                 </div>
                             </a>
                             <div class="re-content">

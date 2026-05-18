@@ -2,9 +2,7 @@
 import { getCollection } from 'astro:content';
 import '../styles/hero.css';
 import TrendingArticlesSidebar from './TrendingArticlesSidebar.astro';
-
-
-import heroImage from '../assets/images/heroImage.png';
+import { resolveArticleImage } from '../utils/imageResolver';
 
 // 1. Fetch data
 const articles = await getCollection('articles');
@@ -21,9 +19,8 @@ const featuredFArticles = articles
         return orderA - orderB;
     });
 
-// 3. Define our slots
+// 3. Define our slots (Only the main featured story with Order 1, Segment F, Home Y)
 const mainFeatured = featuredFArticles[0];
-const secondaryFeatures = featuredFArticles.slice(1, 4);
 
 
 ---
@@ -43,7 +40,7 @@ const secondaryFeatures = featuredFArticles.slice(1, 4);
                     <div class="feature-content">
                         <a href={`/articles/${mainFeatured.data.slug || mainFeatured.id}`} class="feature-image-link">
                             <div class="feature-image-wrapper">
-                                <img src={heroImage.src} alt={mainFeatured.data.title} class="feature-img" />
+                                <img src={resolveArticleImage(mainFeatured.data["Image Featured"] || mainFeatured.data.Image).src} alt={mainFeatured.data.title} class="feature-img" />
                             </div>
                         </a>
                         
@@ -58,28 +55,6 @@ const secondaryFeatures = featuredFArticles.slice(1, 4);
                                 <span class="meta-dot"></span>
                                 <span class="meta-date">{mainFeatured.data.Date}</span>
                             </div>
-                        </div>
-                    </div>
-                )}
-
-                {secondaryFeatures.length > 0 && (
-                    <div class="secondary-grid-wrapper">
-                        <div class="secondary-grid">
-                            {secondaryFeatures.map(article => (
-                                <div class="secondary-card">
-                                    <a href={`/articles/${article.data.slug || article.id}`} class="secondary-image-link">
-                                        <div class="secondary-image-wrapper">
-                                            <img src={heroImage.src} alt={article.data.title} class="secondary-img" />
-                                        </div>
-                                    </a>
-                                    <div class="secondary-info">
-                                        <span class="secondary-cat">{article.data.Category}</span>
-                                        <a href={`/articles/${article.data.slug || article.id}`}>
-                                            <h3>{article.data.title}</h3>
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 )}

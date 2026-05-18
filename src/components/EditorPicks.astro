@@ -1,8 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import '../styles/editor-picks.css';
-
-import heroImage from '../assets/images/heroImage.png';
+import { resolveArticleImage } from '../utils/imageResolver';
 
 // 1. Fetch data
 const articles = await getCollection('articles');
@@ -34,7 +33,7 @@ const editorPicks = articles
                     <article class={`pick-card ${index === 0 ? 'pick-featured' : 'pick-standard'}`}>
                         <a href={`/articles/${article.data.slug || article.id}`} class="pick-image-link">
                             <div class="pick-image-wrapper">
-                                <img src={heroImage.src} alt={article.data.title} class="pick-img" />
+                                <img src={resolveArticleImage(article.data["Image Featured"] || article.data.Image).src} alt={article.data.title} class="pick-img" />
                             </div>
                         </a>
                         <div class="pick-content">
