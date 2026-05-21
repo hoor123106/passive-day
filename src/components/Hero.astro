@@ -12,7 +12,7 @@ const articles = await getCollection('articles');
 const featuredFArticles = articles
     .filter(a => 
         a.data.Segment?.toUpperCase() === 'F' && 
-        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+        a.data.Home?.toUpperCase() === 'Y'
     )
     .sort((a, b) => {
         const orderA = parseInt(a.data.Order) || 999;

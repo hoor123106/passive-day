@@ -11,7 +11,7 @@ const articles = await getCollection('articles');
 const realEstateArticles = articles
     .filter(a => 
         a.data.Segment?.toUpperCase() === 'R' && 
-        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+        a.data.Home?.toUpperCase() === 'Y'
     )
     .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime())
     .slice(0, 3);
@@ -20,7 +20,7 @@ const realEstateArticles = articles
 const popularArticles = articles
     .filter(a => 
         a.data.Segment?.toUpperCase() === 'P' && 
-        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+        a.data.Home?.toUpperCase() === 'Y'
     )
     .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999))
     .slice(0, 5);
@@ -45,8 +45,8 @@ const popularArticles = articles
                                     <Image 
                                         src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)} 
                                         alt={article.data.title} 
-                                        widths={[400, 800]}
-                                        sizes="(max-width: 768px) 400px, 800px"
+                                        widths={[240,400, 800]}
+                                 sizes="(max-width: 768px) 400px, 240px"
                                         quality="mid"
                                         loading="lazy"
                                         decoding="async"
@@ -95,9 +95,7 @@ const popularArticles = articles
                     ))}
                 </div>
 
-                <div class="view-all-container">
-                    <a href="/news" class="view-all-btn">VIEW ALL NEWS</a>
-                </div>
+        
             </div>
 
         </div>

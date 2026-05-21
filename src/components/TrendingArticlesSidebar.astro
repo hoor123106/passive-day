@@ -5,12 +5,19 @@ import { getCategorySlug } from '../utils/imageResolver';
 
 const articles = await getCollection('articles');
 
-const trendingArticles = ['T', 'E', 'R', 'P'].map(letter => 
-    articles.find(a => 
-        a.data.Segment?.toUpperCase() === letter && 
-        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+
+
+const trendingArticles = articles
+    .filter(a => 
+        a.data.Segment?.toUpperCase() === 'T' && 
+        a.data.Home?.toUpperCase() === 'Y'
     )
-).filter(Boolean);
+    .sort((a, b) => {
+        const orderA = parseInt(a.data.Order) || 999;
+        const orderB = parseInt(b.data.Order) || 999;
+        return orderA - orderB;
+    })
+    .slice(0, 3);
 ---
 
 <div class="widget trending-widget">

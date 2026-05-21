@@ -10,9 +10,13 @@ const articles = await getCollection('articles');
 const latestArticles = articles
     .filter(a => 
         a.data.Segment?.toUpperCase() === 'L' && 
-        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+        a.data.Home?.toUpperCase() === 'Y'
     )
-    .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime())
+    .sort((a, b) => {
+        const orderA = parseInt(a.data.Order) || 999;
+        const orderB = parseInt(b.data.Order) || 999;
+        return orderA - orderB;
+    })
     .slice(0, 4);
 
 // Function to format date as "X hours ago" or similar is complex without a lib, 
@@ -30,7 +34,7 @@ const formatDate = (dateStr) => {
                 <span class="header-line"></span>
                 <h2>Latest Articles</h2>
             </div>
-            <a href="/news" class="view-all-link">VIEW ALL NEWS</a>
+          
         </div>
         
         <div class="latest-grid">

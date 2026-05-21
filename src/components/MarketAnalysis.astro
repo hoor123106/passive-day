@@ -16,7 +16,7 @@ const articles = await getCollection('articles');
 const marketArticles = articles
     .filter(a => 
         a.data.Segment?.toUpperCase() === 'M' && 
-        (a.data.Home?.toUpperCase() === 'Y' || a.data.HomePage?.toUpperCase() === 'Y')
+        a.data.Home?.toUpperCase() === 'Y'
     )
     .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999))
     .slice(0, 3);
@@ -30,14 +30,7 @@ const marketArticles = articles
                 <h2 class="market-title">Market Analysis</h2>
                 <p class="market-subtitle">Deep dives into the numbers that matter.</p>
             </div>
-            <a href="/reports" class="view-all-reports-link">
-                View all reports 
-                <span class="arrow-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M5 12H19M19 12L12 5M19 12L12 19" />
-                    </svg>
-                </span>
-            </a>
+        
         </div>
         
         <div class="market-grid">
@@ -50,7 +43,7 @@ const marketArticles = articles
                                 alt={article.data.title} 
                                 class="market-img" 
                                 widths={[400, 800]}
-                                sizes="(max-width: 768px) 400px, 800px"
+                                sizes="(max-width: 768px) 400px, 400px"
                                 quality="mid"
                                 loading="lazy"
                                 decoding="async"
