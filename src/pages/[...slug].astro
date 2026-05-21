@@ -1,20 +1,25 @@
 ---
 import { getCollection, render } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import '../../styles/articlesSlug.css';
-import TrendingArticlesSidebar from '../../components/TrendingArticlesSidebar.astro';
-import EditorPicks from '../../components/EditorPicks.astro';
-import LatestArticles from '../../components/LatestArticles.astro';
-import MarketAnalysis from '../../components/MarketAnalysis.astro';
-import CTA from '../../components/CTA.astro';
+import Layout from '../layouts/Layout.astro';
+import '../styles/articlesSlug.css';
+import TrendingArticlesSidebar from '../components/TrendingArticlesSidebar.astro';
+import EditorPicks from '../components/EditorPicks.astro';
+import LatestArticles from '../components/LatestArticles.astro';
+import MarketAnalysis from '../components/MarketAnalysis.astro';
+import CTA from '../components/CTA.astro';
+import { getCategorySlug } from '../utils/imageResolver';
 
 
 export async function getStaticPaths() {
     const articles = await getCollection('articles');
-    return articles.map(article => ({
-        params: { slug: article.data.slug || article.id },
-        props: { article },
-    }));
+    return articles.map(article => {
+        const catSlug = getCategorySlug(article.data.Category);
+        const artSlug = article.data.slug || article.id;
+        return {
+            params: { slug: `${catSlug}/${artSlug}` },
+            props: { article },
+        };
+    });
 }
 
 const { article } = Astro.props;

@@ -2,7 +2,8 @@
 import { getCollection } from 'astro:content';
 import '../styles/hero.css';
 import TrendingArticlesSidebar from './TrendingArticlesSidebar.astro';
-import { resolveArticleImage } from '../utils/imageResolver';
+import { resolveArticleImage, getCategorySlug } from '../utils/imageResolver';
+import { Image } from 'astro:assets';
 
 // 1. Fetch data
 const articles = await getCollection('articles');
@@ -21,14 +22,11 @@ const featuredFArticles = articles
 
 // 3. Define our slots (Only the main featured story with Order 1, Segment F, Home Y)
 const mainFeatured = featuredFArticles[0];
-
-
 ---
 
 <section class="hero-section">
     <div class="container">
         <div class="main-layout">
-            
             <!-- LEFT SIDE: FEATURE STORY -->
             <div class="feature-story">
                 <div class="section-label">
@@ -38,14 +36,25 @@ const mainFeatured = featuredFArticles[0];
 
                 {mainFeatured && (
                     <div class="feature-content">
-                        <a href={`/articles/${mainFeatured.data.slug || mainFeatured.id}`} class="feature-image-link">
+                        <a href={`/${getCategorySlug(mainFeatured.data.Category)}/${mainFeatured.data.slug || mainFeatured.id}`} class="feature-image-link">
                             <div class="feature-image-wrapper">
-                                <img src={resolveArticleImage(mainFeatured.data["Image Featured"] || mainFeatured.data.Image).src} alt={mainFeatured.data.title} class="feature-img" />
+                                <Image 
+                                    src={resolveArticleImage(mainFeatured.data["Image Featured"] || mainFeatured.data.Image)} 
+                                    alt={mainFeatured.data.title} 
+                                    class="feature-img" 
+                                    widths={[400, 800, 1200]}
+                                    sizes="(max-width: 768px) 400px, (max-width: 1024px) 800px, 1200px"
+                                    quality="mid"
+                                    loading="eager"
+                                    decoding="async"
+                                    fetchpriority="high"
+                                    format="avif"
+                                />
                             </div>
                         </a>
                         
                         <div class="feature-info">
-                            <a href={`/articles/${mainFeatured.data.slug || mainFeatured.id}`}>
+                            <a href={`/articles/${getCategorySlug(mainFeatured.data.Category)}/${mainFeatured.data.slug || mainFeatured.id}`}>
                                 <h2>{mainFeatured.data.title}</h2>
                             </a>
                             <p class="feature-excerpt">{mainFeatured.data["Meta Description"]}</p>

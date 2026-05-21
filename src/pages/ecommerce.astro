@@ -1,44 +1,417 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import '../styles/articlesIndex.css';
+import { Image } from 'astro:assets';
+import { resolveArticleImage, getCategorySlug } from '../utils/imageResolver';
 
+// Images for Market Analysis
+import img1 from '../assets/images/1-marketAnalysis_image.png';
+import img2 from '../assets/images/2-marketAnalysis_image.png';
+import img3 from '../assets/images/3-marketAnalysis_image.png';
+
+// CSS Imports matching Home Page styling
+import '../styles/homepage.css';
+import '../styles/hero.css';
+import '../styles/trending-sidebar.css';
+import '../styles/editor-picks.css';
+import '../styles/latest-real-estate.css';
+import '../styles/latest-articles.css';
+import '../styles/market-analysis.css';
+import '../styles/cta.css';
+
+// 1. Fetch data
 const allArticles = await getCollection('articles');
-const articles = allArticles.filter(article => article.data.Category?.trim() === 'Ecommerce');
 
-// --- CLOUDINARY CONFIGURATION ---
-const CLOUDINARY_BASE = "https://res.cloudinary.com/creyo-com/image/upload/v1776686100/mimya/blog/";
-const FALLBACK_IMAGE = `${CLOUDINARY_BASE}blog-placeholder.webp`;
+// 2. Filter for "Digital Products" category
+const digitalArticles = allArticles.filter(
+    article => article.data.Category?.trim() === 'E-commerce'
+);
+
+// --- CATEGORY-SPECIFIC LOGIC ---
+
+// A. HERO SECTION
+// Filter and Sort Featured Articles (Segment F)
+const featuredFArticles = digitalArticles
+    .filter(a => a.data.Segment?.toUpperCase() === 'F')
+    .sort((a, b) => {
+        const orderA = parseInt(a.data.Order) || 999;
+        const orderB = parseInt(b.data.Order) || 999;
+        return orderA - orderB;
+    });
+
+// Define three featured stories
+let featuredArticles = featuredFArticles.slice(0, 3);
+if (featuredArticles.length < 3) {
+    const remaining = digitalArticles
+        .filter(a => !featuredArticles.includes(a))
+        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
+    featuredArticles = [...featuredArticles, ...remaining].slice(0, 3);
+}
+
+// B. TRENDING ARTICLES SIDEBAR
+// Filter for segments 'T', 'E', 'R', 'P'
+const trendingArticles = ['T', 'E', 'R', 'P'].map(letter => 
+    digitalArticles.find(a => a.data.Segment?.toUpperCase() === letter)
+).filter(Boolean);
+
+// C. EDITOR'S PICKS
+// Filter and Sort Editor Picks (Segment E)
+const editorPicks = digitalArticles
+    .filter(a => a.data.Segment?.toUpperCase() === 'E')
+    .sort((a, b) => {
+        const orderA = parseInt(a.data.Order) || 999;
+        const orderB = parseInt(b.data.Order) || 999;
+        return orderA - orderB;
+    })
+    .slice(0, 3);
+
+// D. LATEST IN DIGITAL PRODUCTS & MOST POPULAR
+// Left Column: Latest in Digital Products (Segment R with Date fallback)
+let latestDigitalProducts = digitalArticles.filter(a => a.data.Segment?.toUpperCase() === 'R');
+if (latestDigitalProducts.length < 3) {
+    const remaining = digitalArticles
+        .filter(a => !latestDigitalProducts.includes(a) && !featuredArticles.includes(a))
+        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
+    latestDigitalProducts = [...latestDigitalProducts, ...remaining].slice(0, 3);
+}
+
+// Right Column: Most Popular (Segment P with Date/Order fallback)
+let popularArticles = digitalArticles
+    .filter(a => a.data.Segment?.toUpperCase() === 'P')
+    .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999));
+if (popularArticles.length < 5) {
+    const remaining = digitalArticles
+        .filter(a => !popularArticles.includes(a) && !featuredArticles.includes(a))
+        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
+    popularArticles = [...popularArticles, ...remaining].slice(0, 5);
+}
+
+// E. LATEST ARTICLES
+// Filter and Sort Latest Articles (Segment L with Date fallback)
+let latestArticles = digitalArticles
+    .filter(a => a.data.Segment?.toUpperCase() === 'L')
+    .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
+if (latestArticles.length < 4) {
+    const remaining = digitalArticles
+        .filter(a => !latestArticles.includes(a) && !featuredArticles.includes(a))
+        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
+    latestArticles = [...latestArticles, ...remaining].slice(0, 4);
+}
+
+// Format date helper
+const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+// F. MARKET ANALYSIS
+// Filter and Sort Market Analysis (Segment M with Date fallback)
+let marketArticles = digitalArticles
+    .filter(a => a.data.Segment?.toUpperCase() === 'M')
+    .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999));
+if (marketArticles.length < 3) {
+    const remaining = digitalArticles
+        .filter(a => !marketArticles.includes(a) && !featuredArticles.includes(a))
+        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
+    marketArticles = [...marketArticles, ...remaining].slice(0, 3);
+}
+
+const marketImages = [img1, img2, img3];
 ---
 
-<Layout title="Ecommerce | PassiveDay" description="Build and automate your ecommerce business for passive growth.">
-    <section class="page-header">
-        <div class="container fade-in-up">
-            <h1>E- <span class="gradient-text">Commerce</span></h1>
-            <p>Strategies for dropshipping, Amazon FBA, and digital storefronts.</p>
+<Layout title="Digital Products | PassiveDay" description="Explore the best strategies for earning passive income through digital products.">
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="main-layout">
+                <!-- LEFT SIDE: FEATURE STORIES -->
+                <div class="feature-story">
+                    <div class="section-label">
+                        <span class="label-line"></span>
+                        <span class="label-text">FEATURE STORY</span>
+                    </div>
+                    <div class="featured-list">
+                        {featuredArticles.map(article => (
+                            <div class="featured-row-item">
+                                <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`} class="featured-row-image-link">
+                                    <div class="featured-row-image-wrapper">
+                                        <Image
+                                            src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)}
+                                            alt={article.data.title}
+                                            class="featured-row-img"
+                                            widths={[400, 800]}
+                                            sizes="(max-width: 768px) 300px, 400px"
+                                            quality="mid"
+                                            loading="eager"
+                                            decoding="async"
+                                            fetchpriority="high"
+                                            format="avif"
+                                        />
+                                    </div>
+                                </a>
+                                <div class="featured-row-info">
+                                    <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                        <h2>{article.data.title}</h2>
+                                    </a>
+                                    <p class="featured-row-excerpt">{article.data["Meta Description"]}</p>
+                                    <div class="featured-row-meta">
+                                        <span class="author-avatar">{article.data["Author Name"]?.charAt(0)}</span>
+                                        <span class="author-name">{article.data["Author Name"]}</span>
+                                        <span class="meta-dot"></span>
+                                        <span class="meta-date">{article.data.Date}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: TRENDING SIDEBAR & NEWSLETTER -->
+                <aside class="sidebar">
+                    <div class="widget trending-widget">
+                        <div class="widget-header">
+                            <div class="trending-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            </div>
+                            <h3>Trending Now</h3>
+                        </div>
+                        
+                        <div class="trending-list">
+                            {trendingArticles.map(article => (
+                                <div class="trending-item">
+                                    <span class="trending-cat">{article.data.Category || article.data.Segment}</span>
+                                    <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                        <h4>{article.data.title}</h4>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div class="widget newsletter-widget">
+                        <h3>Intelligence Report</h3>
+                        <p>Get weekly alpha on income streams delivered to your inbox.</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Enter your email" required />
+                            <button type="submit">SUBSCRIBE</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
         </div>
     </section>
 
-    <section class="articles-grid container">
-        <div class="grid">
-            {articles.map((article) => (
-                <a href={`/articles/${article.data.slug || article.id}`} class="article-card fade-in-up">
-                    <div class="card-image">
-                        <img 
-                            src={article.data["Image Featured"] ? `${CLOUDINARY_BASE}${article.data["Image Featured"]}` : FALLBACK_IMAGE} 
-                            alt={article.data["Image ALT"] || article.data.title}
-                            onerror={`this.src='${FALLBACK_IMAGE}'; this.onerror=null;`}
-                        />
-                        <span class="category-tag">{article.data.Category || 'Article'}</span>
+    <!-- EDITOR'S PICKS SECTION -->
+    {editorPicks.length > 0 && (
+        <section class="editor-picks-section">
+            <div class="container">
+                <div class="picks-header">
+                    <span class="picks-header-line"></span>
+                    <h2>Editor's Picks</h2>
+                </div>
+                
+                <div class="picks-grid">
+                    {editorPicks.map((article, index) => (
+                        <article class={`pick-card ${index === 0 ? 'pick-featured' : 'pick-standard'}`}>
+                            <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`} class="pick-image-link">
+                                <div class="pick-image-wrapper">
+                                    <Image 
+                                        src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)} 
+                                        alt={article.data.title} 
+                                        class="pick-img" 
+                                        widths={[400, 800, 1200]}
+                                        sizes="(max-width: 768px) 400px, 800px"
+                                        quality="mid"
+                                        loading="lazy"
+                                        decoding="async"
+                                        format="avif"
+                                    />
+                                </div>
+                            </a>
+                            <div class="pick-content">
+                                <span class="pick-category">{article.data.Category}</span>
+                                <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                    <h3>{article.data.title}</h3>
+                                </a>
+                                {index === 0 && (
+                                    <p class="pick-excerpt">{article.data["Meta Description"]}</p>
+                                )}
+                            </div>
+                        </article>
+                    ))}
+                </div>
+            </div>
+        </section>
+    )}
+
+    <!-- LATEST IN DIGITAL PRODUCTS & MOST POPULAR SECTION -->
+    <section class="latest-re-section">
+        <div class="container">
+            <div class="re-main-grid">
+                
+                <!-- LEFT: Latest in Digital Products -->
+                <div class="re-column">
+                    <div class="section-header">
+                        <span class="header-line"></span>
+                        <h2>Latest in Digital Products</h2>
                     </div>
-                    <div class="card-content">
-                        <span class="date">{article.data.Date}</span>
-                        <h3>{article.data.title}</h3>
-                        <p>{article.data["Meta Description"]?.substring(0, 100)}...</p>
-                        <span class="read-more">Read Article <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+                    
+                    <div class="re-list">
+                        {latestDigitalProducts.map(article => (
+                            <article class="re-item">
+                                <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`} class="re-image-link">
+                                    <div class="re-image-wrapper">
+                                        <Image 
+                                            src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)} 
+                                            alt={article.data.title} 
+                                            widths={[400, 800]}
+                                            sizes="(max-width: 768px) 400px, 800px"
+                                            quality="mid"
+                                            loading="lazy"
+                                            decoding="async"
+                                            format="avif"
+                                        />
+                                    </div>
+                                </a>
+                                <div class="re-content">
+                                    <span class="re-category">{article.data.Category}</span>
+                                    <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                        <h3>{article.data.title}</h3>
+                                    </a>
+                                    <p class="re-excerpt">{article.data["Meta Description"]}</p>
+                                </div>
+                            </article>
+                        ))}
                     </div>
-                </a>
-            ))}
+                </div>
+
+                <!-- RIGHT: Most Popular -->
+                <div class="popular-column">
+                    <div class="section-header popular-header-top">
+                        <div class="header-with-icon">
+                            <svg class="popular-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#cc0000" stroke="#cc0000"/>
+                            </svg>
+                            <h2>Most Popular</h2>
+                        </div>
+                    </div>
+
+                    <div class="popular-list">
+                        {popularArticles.map((article, index) => (
+                            <div class="popular-item">
+                                <span class="popular-number">0{index + 1}</span>
+                                <div class="popular-info">
+                                    <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                        <h4>{article.data.title}</h4>
+                                    </a>
+                                    <div class="popular-meta">
+                                        <span class="pop-cat">{article.data.Category}</span>
+                                        <span class="pop-dot"></span>
+                                        <span class="pop-read">12 MIN READ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- LATEST ARTICLES SECTION -->
+    <section class="latest-articles-section">
+        <div class="container">
+            <div class="latest-header">
+                <div class="header-left">
+                    <span class="header-line"></span>
+                    <h2>Latest Articles</h2>
+                </div>
+
+            </div>
+            
+            <div class="latest-grid">
+                {latestArticles.map(article => (
+                    <article class="latest-card">
+                        <div class="latest-content">
+                            <span class="latest-category">{article.data.Category}</span>
+                            <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                <h3>{article.data.title}</h3>
+                            </a>
+                            <p class="latest-excerpt">{article.data["Meta Description"]}</p>
+                            <span class="latest-date">{formatDate(article.data.Date)}</span>
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <!-- MARKET ANALYSIS SECTION -->
+    <section class="market-analysis-section relative">
+        <div class="container">
+            <div class="market-header">
+                <div class="market-header-left">
+                    <h2 class="market-title">Market Analysis</h2>
+                    <p class="market-subtitle">Deep dives into the numbers that matter.</p>
+                </div>
+
+            </div>
+            
+            <div class="market-grid">
+                {marketArticles.map((article, index) => (
+                    <article class="market-card group">
+                        <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`} class="market-image-link">
+                            <div class="market-image-wrapper editorial-shadow">
+                                <Image 
+                                    src={resolveArticleImage(article.data["Image Featured"] || article.data.Image, marketImages[index] || marketImages[0])} 
+                                    alt={article.data.title} 
+                                    class="market-img" 
+                                    widths={[400, 800]}
+                                    sizes="(max-width: 768px) 400px, 800px"
+                                    quality="mid"
+                                    loading="lazy"
+                                    decoding="async"
+                                    format="avif"
+                                />
+                                <div class="hover-overlay"></div>
+                            </div>
+                        </a>
+                        <div class="market-content">
+                            <span class="market-category">{article.data.Category}</span>
+                            <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                <h3 class="market-card-title">{article.data.title}</h3>
+                            </a>
+                            <p class="market-excerpt">{article.data["Meta Description"]}</p>
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box editorial-shadow">
+                <div class="blob blob-left"></div>
+                <div class="blob blob-right"></div>
+                
+                <div class="cta-inner">
+                    <span class="cta-badge">Premium Insights</span>
+                    <h2 class="cta-heading">Build your financial fortress with expert-led passive income strategies.</h2>
+                    <p class="cta-subheading">Join over 50,000 professional investors who receive our exclusive market breakdowns every Tuesday and Friday morning.</p>
+                    
+                    <form class="cta-form-container">
+                        <input type="email" placeholder="Enter your email address" required />
+                        <button type="submit">JOIN PASSIVEDAY</button>
+                    </form>
+                    
+                    <p class="cta-footer">NO SPAM. JUST ALPHA. UNSUBSCRIBE ANYTIME.</p>
+                </div>
+            </div>
         </div>
     </section>
 </Layout>

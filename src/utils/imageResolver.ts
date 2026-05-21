@@ -38,3 +38,39 @@ export function resolveArticleImage(
     // If not found in the local folder, return the fallback image
     return customFallback;
 }
+
+/**
+ * Maps a category name to its url-safe slug counterpart.
+ * Matches existing category landing page routes.
+ * 
+ * @param category The category name from frontmatter.
+ * @returns string slug.
+ */
+export function getCategorySlug(category: string | undefined | null): string {
+    if (!category) return 'uncategorized';
+    const clean = category.trim().toLowerCase();
+    switch (clean) {
+        case 'affiliates':
+        case 'affiliate-marketing':
+        case 'affiliate marketing':
+            return 'affiliate-marketing';
+        case 'crypto':
+        case 'cryptocurrency':
+            return 'crypto';
+        case 'digital products':
+        case 'digital-products':
+            return 'digital-products';
+        case 'ecommerce':
+        case 'e-commerce':
+            return 'ecommerce';
+        case 'real estate':
+        case 'real-estate':
+            return 'real-estate';
+        case 'stock market':
+        case 'stock-market':
+            return 'stock-market';
+        default:
+            return clean.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    }
+}
+

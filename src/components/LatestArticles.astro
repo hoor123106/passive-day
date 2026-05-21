@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import '../styles/latest-articles.css';
+import { getCategorySlug } from '../utils/imageResolver';
 
 // 1. Fetch data
 const articles = await getCollection('articles');
@@ -37,7 +38,7 @@ const formatDate = (dateStr) => {
                 <article class="latest-card">
                     <div class="latest-content">
                         <span class="latest-category">{article.data.Category}</span>
-                        <a href={`/articles/${article.data.slug || article.id}`}>
+                        <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                             <h3>{article.data.title}</h3>
                         </a>
                         <p class="latest-excerpt">{article.data["Meta Description"]}</p>

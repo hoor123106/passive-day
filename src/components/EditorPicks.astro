@@ -1,7 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import '../styles/editor-picks.css';
-import { resolveArticleImage } from '../utils/imageResolver';
+import { resolveArticleImage, getCategorySlug } from '../utils/imageResolver';
+import { Image } from 'astro:assets';
 
 // 1. Fetch data
 const articles = await getCollection('articles');
@@ -31,14 +32,24 @@ const editorPicks = articles
             <div class="picks-grid">
                 {editorPicks.map((article, index) => (
                     <article class={`pick-card ${index === 0 ? 'pick-featured' : 'pick-standard'}`}>
-                        <a href={`/articles/${article.data.slug || article.id}`} class="pick-image-link">
+                        <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`} class="pick-image-link">
                             <div class="pick-image-wrapper">
-                                <img src={resolveArticleImage(article.data["Image Featured"] || article.data.Image).src} alt={article.data.title} class="pick-img" />
+                                <Image 
+                                    src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)} 
+                                    alt={article.data.title} 
+                                    class="pick-img" 
+                                    widths={[400, 800, 1200]}
+                                    sizes="(max-width: 768px) 400px, 800px"
+                                    quality="mid"
+                                    loading="lazy"
+                                    decoding="async"
+                                    format="avif"
+                                />
                             </div>
                         </a>
                         <div class="pick-content">
                             <span class="pick-category">{article.data.Category}</span>
-                            <a href={`/articles/${article.data.slug || article.id}`}>
+                            <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                 <h3>{article.data.title}</h3>
                             </a>
                             {index === 0 && (

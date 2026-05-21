@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import '../styles/trending-sidebar.css';
+import { getCategorySlug } from '../utils/imageResolver';
 
 const articles = await getCollection('articles');
 
@@ -24,7 +25,7 @@ const trendingArticles = ['T', 'E', 'R', 'P'].map(letter =>
         {trendingArticles.map(article => (
             <div class="trending-item">
                 <span class="trending-cat">{article.data.Category || article.data.Segment}</span>
-                <a href={`/articles/${article.data.slug || article.id}`}>
+                <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                     <h4>{article.data.title}</h4>
                 </a>
             </div>
