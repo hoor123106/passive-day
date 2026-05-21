@@ -22,9 +22,9 @@ import '../styles/cta.css';
 // 1. Fetch data
 const allArticles = await getCollection('articles');
 
-// 2. Filter for "Digital Products" category
+// 2. Filter for "E-commerce" category
 const digitalArticles = allArticles.filter(
-    article => article.data.Category?.trim() === 'E-commerce'
+    article => article.data.Category?.trim() === 'Ecommerce'
 );
 
 // --- CATEGORY-SPECIFIC LOGIC ---
@@ -119,7 +119,7 @@ if (marketArticles.length < 3) {
 const marketImages = [img1, img2, img3];
 ---
 
-<Layout title="Digital Products | PassiveDay" description="Explore the best strategies for earning passive income through digital products.">
+<Layout title="E-commerce | PassiveDay" description="Explore the best strategies for earning passive income through E-commerce.">
     <!-- HERO SECTION -->
     <section class="hero-section">
         <div class="container">
@@ -249,11 +249,11 @@ const marketImages = [img1, img2, img3];
         <div class="container">
             <div class="re-main-grid">
                 
-                <!-- LEFT: Latest in Digital Products -->
+                <!-- LEFT: Latest in E-commerce -->
                 <div class="re-column">
                     <div class="section-header">
                         <span class="header-line"></span>
-                        <h2>Latest in Digital Products</h2>
+                        <h2>Latest in E-commerce</h2>
                     </div>
                     
                     <div class="re-list">
