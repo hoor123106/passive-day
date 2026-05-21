@@ -129,16 +129,70 @@
 }
 
 .menu-toggle {
-    display: flex;
+    display: none; /* Hide on desktop */
+}
+
+.close-icon {
+    display: none;
+}
+
+.site-header.menu-open .hamburger-icon {
+    display: none;
+}
+
+.site-header.menu-open .close-icon {
+    display: block;
 }
 
 @media (max-width: 1024px) {
+    .menu-toggle {
+        display: flex; /* Show on mobile/tablet */
+    }
+
     .header-container {
         padding: 0 20px;
     }
 
     .main-nav {
-        display: none;
+        display: flex;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fffcf9;
+        border-bottom: 2px solid #1a1a1a;
+        padding: 24px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        z-index: 9999;
+        
+        /* Smooth slide-down transition */
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+        transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .site-header.menu-open .main-nav {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .main-nav ul {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .main-nav a {
+        display: block;
+        width: 100%;
+        font-size: 16px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 }
 

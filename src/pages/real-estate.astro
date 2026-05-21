@@ -24,7 +24,7 @@ const allArticles = await getCollection('articles');
 
 // 2. Filter for "Real Estate" category
 const categoryArticles = allArticles.filter(
-    article => article.data.Category?.trim() === 'Real Estate'
+    article => getCategorySlug(article.data.Category) === 'real-estate'
 );
 
 // --- CATEGORY-SPECIFIC LOGIC ---
@@ -132,7 +132,7 @@ const marketImages = [img1, img2, img3];
                                             alt={article.data.title}
                                             class="featured-row-img"
                                             widths={[400, 800]}
-                                            sizes="(max-width: 768px) 300px, 400px"
+                                            sizes="(max-width: 768px) 400px, 400px"
                                             quality="mid"
                                             loading="eager"
                                             decoding="async"
@@ -210,7 +210,7 @@ const marketImages = [img1, img2, img3];
                                         alt={article.data.title}
                                         class="pick-img"
                                         widths={[400, 800, 1200]}
-                                        sizes="(max-width: 768px) 400px, 800px"
+                                        sizes="(max-width: 768px) 400px, 240px"
                                         quality="mid"
                                         loading="lazy"
                                         decoding="async"

@@ -7,7 +7,8 @@ import EditorPicks from '../components/EditorPicks.astro';
 import LatestArticles from '../components/LatestArticles.astro';
 import MarketAnalysis from '../components/MarketAnalysis.astro';
 import CTA from '../components/CTA.astro';
-import { getCategorySlug } from '../utils/imageResolver';
+import { getCategorySlug, resolveArticleImage } from '../utils/imageResolver';
+import { Image } from 'astro:assets';
 
 
 export async function getStaticPaths() {
@@ -26,15 +27,13 @@ const { article } = Astro.props;
 const { Content } = await render(article);
 const allArticles = await getCollection('articles');
 
-// --- CLOUDINARY CONFIGURATION ---
-const CLOUDINARY_BASE = "https://res.cloudinary.com/creyo-com/image/upload/v1776686100/mimya/blog/";
-const FALLBACK_IMAGE = `${CLOUDINARY_BASE}blog-placeholder.webp`;
+const featuredImage = resolveArticleImage(article.data["Image Featured"] || article.data.Image);
 
 // SEO Data
 const articleData = {
     title: article.data.title || article.data.Title,
     description: article.data["Meta Description"] || article.data["Meta-Description"],
-    image: article.data["Image Featured"] ? `${CLOUDINARY_BASE}${article.data["Image Featured"]}` : FALLBACK_IMAGE,
+    image: featuredImage.src,
     author: article.data["Author Name"] || 'PassiveDay Team',
     datePublished: article.data.Date || new Date().toISOString()
 };
@@ -64,10 +63,15 @@ const reserved = [
             </header>
 
             <div class="featured-image fade-in-up">
-                <img 
-                    src={article.data["Image Featured"] ? `${CLOUDINARY_BASE}${article.data["Image Featured"]}` : FALLBACK_IMAGE} 
+                <Image 
+                    src={featuredImage} 
                     alt={article.data["Image ALT"] || article.data.title}
-                    onerror={`this.src='${FALLBACK_IMAGE}'; this.onerror=null;`}
+                    widths={[400, 800, 1200]}
+                    sizes="(max-width: 768px) 100vw, 800px"
+                    quality="high"
+                    loading="eager"
+                    decoding="async"
+                    format="avif"
                 />
             </div>
 

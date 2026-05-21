@@ -24,7 +24,7 @@ const allArticles = await getCollection('articles');
 
 // 2. Filter for "Affiliates" category
 const categoryArticles = allArticles.filter(
-    article => article.data.Category?.trim() === 'Affiliates'
+    article => getCategorySlug(article.data.Category) === 'affiliate-marketing'
 );
 
 // --- CATEGORY-SPECIFIC LOGIC ---
@@ -131,8 +131,8 @@ const marketImages = [img1, img2, img3];
                                             src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)}
                                             alt={article.data.title}
                                             class="featured-row-img"
-                                            widths={[400, 800]}
-                                            sizes="(max-width: 768px) 300px, 400px"
+                                            widths={[400]}
+                                            sizes="(max-width: 768px) 400px, 400px"
                                             quality="mid"
                                             loading="eager"
                                             decoding="async"
@@ -209,8 +209,8 @@ const marketImages = [img1, img2, img3];
                                         src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)}
                                         alt={article.data.title}
                                         class="pick-img"
-                                        widths={[400, 800, 1200]}
-                                        sizes="(max-width: 768px) 400px, 800px"
+                                        widths={[400]}
+                                        sizes="(max-width: 768px) 400px, 400px"
                                         quality="mid"
                                         loading="lazy"
                                         decoding="async"
@@ -250,8 +250,8 @@ const marketImages = [img1, img2, img3];
                                         <Image
                                             src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)}
                                             alt={article.data.title}
-                                            widths={[400, 800]}
-                                            sizes="(max-width: 768px) 400px, 800px"
+                                            widths={[400, 240]}
+                                            sizes="(max-width: 768px) 400px, 240px"
                                             quality="mid"
                                             loading="lazy"
                                             decoding="async"
@@ -343,8 +343,8 @@ const marketImages = [img1, img2, img3];
                                     src={resolveArticleImage(article.data["Image Featured"] || article.data.Image, marketImages[index] || marketImages[0])}
                                     alt={article.data.title}
                                     class="market-img"
-                                    widths={[400, 800]}
-                                    sizes="(max-width: 768px) 400px, 800px"
+                                    widths={[400]}
+                                    sizes="(max-width: 768px) 400px, 400px"
                                     quality="mid"
                                     loading="lazy"
                                     decoding="async"
