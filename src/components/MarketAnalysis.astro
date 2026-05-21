@@ -61,7 +61,7 @@ const marketArticles = articles
                     </a>
                     <div class="market-content">
                         <span class="market-category">{article.data.Category}</span>
-                        <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                        <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                             <h3 class="market-card-title">{article.data.title}</h3>
                         </a>
                         <p class="market-excerpt">{article.data["Meta Description"]}</p>

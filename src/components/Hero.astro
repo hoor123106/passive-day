@@ -54,7 +54,7 @@ const mainFeatured = featuredFArticles[0];
                         </a>
                         
                         <div class="feature-info">
-                            <a href={`/articles/${getCategorySlug(mainFeatured.data.Category)}/${mainFeatured.data.slug || mainFeatured.id}`}>
+                            <a href={`/${getCategorySlug(mainFeatured.data.Category)}/${mainFeatured.data.slug || mainFeatured.id}`}>
                                 <h2>{mainFeatured.data.title}</h2>
                             </a>
                             <p class="feature-excerpt">{mainFeatured.data["Meta Description"]}</p>

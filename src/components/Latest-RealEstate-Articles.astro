@@ -56,7 +56,7 @@ const popularArticles = articles
                             </a>
                             <div class="re-content">
                                 <span class="re-category">{article.data.Category}</span>
-                                <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                     <h3>{article.data.title}</h3>
                                 </a>
                                 <p class="re-excerpt">{article.data["Meta Description"]}</p>
@@ -82,7 +82,7 @@ const popularArticles = articles
                         <div class="popular-item">
                             <span class="popular-number">0{index + 1}</span>
                             <div class="popular-info">
-                                <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                     <h4>{article.data.title}</h4>
                                 </a>
                                 <div class="popular-meta">

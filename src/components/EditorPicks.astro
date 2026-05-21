@@ -49,7 +49,7 @@ const editorPicks = articles
                         </a>
                         <div class="pick-content">
                             <span class="pick-category">{article.data.Category}</span>
-                            <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                            <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                 <h3>{article.data.title}</h3>
                             </a>
                             {index === 0 && (

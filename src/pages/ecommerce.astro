@@ -150,7 +150,7 @@ const marketImages = [img1, img2, img3];
                                     </div>
                                 </a>
                                 <div class="featured-row-info">
-                                    <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                    <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                         <h2>{article.data.title}</h2>
                                     </a>
                                     <p class="featured-row-excerpt">{article.data["Meta Description"]}</p>
@@ -230,7 +230,7 @@ const marketImages = [img1, img2, img3];
                             </a>
                             <div class="pick-content">
                                 <span class="pick-category">{article.data.Category}</span>
-                                <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                     <h3>{article.data.title}</h3>
                                 </a>
                                 {index === 0 && (
@@ -275,7 +275,7 @@ const marketImages = [img1, img2, img3];
                                 </a>
                                 <div class="re-content">
                                     <span class="re-category">{article.data.Category}</span>
-                                    <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                    <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                         <h3>{article.data.title}</h3>
                                     </a>
                                     <p class="re-excerpt">{article.data["Meta Description"]}</p>
@@ -301,7 +301,7 @@ const marketImages = [img1, img2, img3];
                             <div class="popular-item">
                                 <span class="popular-number">0{index + 1}</span>
                                 <div class="popular-info">
-                                    <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                                    <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                         <h4>{article.data.title}</h4>
                                     </a>
                                     <div class="popular-meta">
@@ -381,7 +381,7 @@ const marketImages = [img1, img2, img3];
                         </a>
                         <div class="market-content">
                             <span class="market-category">{article.data.Category}</span>
-                            <a href={`/articles/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
+                            <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`}>
                                 <h3 class="market-card-title">{article.data.title}</h3>
                             </a>
                             <p class="market-excerpt">{article.data["Meta Description"]}</p>
