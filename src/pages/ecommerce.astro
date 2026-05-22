@@ -23,98 +23,72 @@ import '../styles/cta.css';
 const allArticles = await getCollection('articles');
 
 // 2. Filter for "E-commerce" category
-const digitalArticles = allArticles.filter(
+const categoryArticles = allArticles.filter(
     article => getCategorySlug(article.data.Category) === 'ecommerce'
 );
 
 // --- CATEGORY-SPECIFIC LOGIC ---
 
+// Helper function to sort articles by Order ascending, falling back to Date descending
+const sortArticles = (articles) => {
+    return articles.sort((a, b) => {
+        const orderA = parseInt(a.data.Order);
+        const orderB = parseInt(b.data.Order);
+        const hasA = !isNaN(orderA);
+        const hasB = !isNaN(orderB);
+        if (hasA && hasB) {
+            if (orderA !== orderB) return orderA - orderB;
+        } else if (hasA) {
+            return -1;
+        } else if (hasB) {
+            return 1;
+        }
+        return new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime();
+    });
+};
+
 // A. HERO SECTION
 // Filter and Sort Featured Articles (Segment F)
-const featuredFArticles = digitalArticles
-    .filter(a => a.data.Segment?.toUpperCase() === 'F')
-    .sort((a, b) => {
-        const orderA = parseInt(a.data.Order) || 999;
-        const orderB = parseInt(b.data.Order) || 999;
-        return orderA - orderB;
-    });
-
-// Define three featured stories
-let featuredArticles = featuredFArticles.slice(0, 3);
-if (featuredArticles.length < 3) {
-    const remaining = digitalArticles
-        .filter(a => !featuredArticles.includes(a))
-        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
-    featuredArticles = [...featuredArticles, ...remaining].slice(0, 3);
-}
+const featuredArticles = sortArticles(
+    categoryArticles.filter(a => a.data.Segment?.toUpperCase() === 'F')
+).slice(0, 3);
 
 // B. TRENDING ARTICLES SIDEBAR
-// Filter for segments 'T', 'E', 'R', 'P'
-const trendingArticles = ['T', 'E', 'R', 'P'].map(letter => 
-    digitalArticles.find(a => a.data.Segment?.toUpperCase() === letter)
-).filter(Boolean);
+const trendingArticles = sortArticles(
+    categoryArticles.filter(a => a.data.Segment?.toUpperCase() === 'T')
+).slice(0, 3);
 
 // C. EDITOR'S PICKS
-// Filter and Sort Editor Picks (Segment E)
-const editorPicks = digitalArticles
-    .filter(a => a.data.Segment?.toUpperCase() === 'E')
-    .sort((a, b) => {
-        const orderA = parseInt(a.data.Order) || 999;
-        const orderB = parseInt(b.data.Order) || 999;
-        return orderA - orderB;
-    })
+const editorPicks = sortArticles(
+    categoryArticles.filter(a => a.data.Segment?.toUpperCase() === 'E')
+).slice(0, 3);
+
+// D. LATEST IN CATEGORY & MOST POPULAR (using categoryArticles)
+// Left Column: Latest in E-commerce (Segment R sorted by date descending)
+const finalLatestCategoryArticles = categoryArticles
+    .filter(a => a.data.Segment?.toUpperCase() === 'R')
+    .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime())
     .slice(0, 3);
 
-// D. LATEST IN DIGITAL PRODUCTS & MOST POPULAR
-// Left Column: Latest in Digital Products (Segment R with Date fallback)
-let latestDigitalProducts = digitalArticles.filter(a => a.data.Segment?.toUpperCase() === 'R');
-if (latestDigitalProducts.length < 3) {
-    const remaining = digitalArticles
-        .filter(a => !latestDigitalProducts.includes(a) && !featuredArticles.includes(a))
-        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
-    latestDigitalProducts = [...latestDigitalProducts, ...remaining].slice(0, 3);
-}
+// Right Column: Most Popular (Segment P sorted by Order)
+const popularArticles = sortArticles(
+    categoryArticles.filter(a => a.data.Segment?.toUpperCase() === 'P')
+).slice(0, 5);
 
-// Right Column: Most Popular (Segment P with Date/Order fallback)
-let popularArticles = digitalArticles
-    .filter(a => a.data.Segment?.toUpperCase() === 'P')
-    .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999));
-if (popularArticles.length < 5) {
-    const remaining = digitalArticles
-        .filter(a => !popularArticles.includes(a) && !featuredArticles.includes(a))
-        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
-    popularArticles = [...popularArticles, ...remaining].slice(0, 5);
-}
+// E. LATEST ARTICLES (Segment L sorted by Order)
+const latestArticles = sortArticles(
+    categoryArticles.filter(a => a.data.Segment?.toUpperCase() === 'L')
+).slice(0, 4);
 
-// E. LATEST ARTICLES
-// Filter and Sort Latest Articles (Segment L with Date fallback)
-let latestArticles = digitalArticles
-    .filter(a => a.data.Segment?.toUpperCase() === 'L')
-    .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
-if (latestArticles.length < 4) {
-    const remaining = digitalArticles
-        .filter(a => !latestArticles.includes(a) && !featuredArticles.includes(a))
-        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
-    latestArticles = [...latestArticles, ...remaining].slice(0, 4);
-}
-
-// Format date helper
 const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 };
 
 // F. MARKET ANALYSIS
-// Filter and Sort Market Analysis (Segment M with Date fallback)
-let marketArticles = digitalArticles
-    .filter(a => a.data.Segment?.toUpperCase() === 'M')
-    .sort((a, b) => (parseInt(a.data.Order) || 999) - (parseInt(b.data.Order) || 999));
-if (marketArticles.length < 3) {
-    const remaining = digitalArticles
-        .filter(a => !marketArticles.includes(a) && !featuredArticles.includes(a))
-        .sort((a, b) => new Date(b.data.Date).getTime() - new Date(a.data.Date).getTime());
-    marketArticles = [...marketArticles, ...remaining].slice(0, 3);
-}
+const marketArticles = sortArticles(
+    categoryArticles.filter(a => a.data.Segment?.toUpperCase() === 'M')
+).slice(0, 3);
 
 const marketImages = [img1, img2, img3];
 ---
@@ -139,7 +113,7 @@ const marketImages = [img1, img2, img3];
                                             src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)}
                                             alt={article.data.title}
                                             class="featured-row-img"
-                                            widths={[400, 800]}
+                                            widths={[400]}
                                             sizes="(max-width: 768px) 400px, 400px"
                                             quality="mid"
                                             loading="eager"
@@ -219,8 +193,8 @@ const marketImages = [img1, img2, img3];
                                         src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)} 
                                         alt={article.data.title} 
                                         class="pick-img" 
-                                        widths={[400, 800, 1200]}
-                                        sizes="(max-width: 768px) 400px, 240px"
+                                        widths={[400]}
+                                        sizes="(max-width: 768px) 400px, 400px"
                                         quality="mid"
                                         loading="lazy"
                                         decoding="async"
@@ -257,15 +231,15 @@ const marketImages = [img1, img2, img3];
                     </div>
                     
                     <div class="re-list">
-                        {latestDigitalProducts.map(article => (
+                        {finalLatestCategoryArticles.map(article => (
                             <article class="re-item">
                                 <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`} class="re-image-link">
                                     <div class="re-image-wrapper">
                                         <Image 
                                             src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)} 
                                             alt={article.data.title} 
-                                            widths={[400, 800]}
-                                            sizes="(max-width: 768px) 400px, 800px"
+                                            widths={[400, 240]}
+                                            sizes="(max-width: 768px) 400px, 240px"
                                             quality="mid"
                                             loading="lazy"
                                             decoding="async"
@@ -369,8 +343,8 @@ const marketImages = [img1, img2, img3];
                                     src={resolveArticleImage(article.data["Image Featured"] || article.data.Image, marketImages[index] || marketImages[0])} 
                                     alt={article.data.title} 
                                     class="market-img" 
-                                    widths={[400, 800]}
-                                    sizes="(max-width: 768px) 400px, 800px"
+                                    widths={[400]}
+                                    sizes="(max-width: 768px) 400px, 400px"
                                     quality="mid"
                                     loading="lazy"
                                     decoding="async"

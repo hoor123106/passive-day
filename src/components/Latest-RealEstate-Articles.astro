@@ -45,8 +45,8 @@ const popularArticles = articles
                                     <Image 
                                         src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)} 
                                         alt={article.data.title} 
-                                        widths={[240,400, 800]}
-                                 sizes="(max-width: 768px) 400px, 240px"
+                                        widths={[240,400]}
+                                        sizes="(max-width: 768px) 400px, 240px"
                                         quality="mid"
                                         loading="lazy"
                                         decoding="async"
