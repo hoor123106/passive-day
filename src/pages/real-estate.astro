@@ -4,11 +4,6 @@ import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import { resolveArticleImage, getCategorySlug } from '../utils/imageResolver';
 
-// Images for Market Analysis
-import img1 from '../assets/images/1-marketAnalysis_image.png';
-import img2 from '../assets/images/2-marketAnalysis_image.png';
-import img3 from '../assets/images/3-marketAnalysis_image.png';
-
 // CSS Imports matching Home Page styling
 import '../styles/homepage.css';
 import '../styles/hero.css';
@@ -89,8 +84,6 @@ const formatDate = (dateStr) => {
 const marketArticles = sortArticles(
     categoryArticles.filter(a => a.data.Segment?.toUpperCase() === 'M')
 ).slice(0, 3);
-
-const marketImages = [img1, img2, img3];
 ---
 <Layout title="Real Estate | PassiveDay" description="Build long-term wealth through strategic real estate investments.">
     <!-- HERO SECTION -->
@@ -321,7 +314,7 @@ const marketImages = [img1, img2, img3];
                         <a href={`/${getCategorySlug(article.data.Category)}/${article.data.slug || article.id}`} class="market-image-link">
                             <div class="market-image-wrapper editorial-shadow">
                                 <Image
-                                    src={resolveArticleImage(article.data["Image Featured"] || article.data.Image, marketImages[index] || marketImages[0])}
+                                    src={resolveArticleImage(article.data["Image Featured"] || article.data.Image)}
                                     alt={article.data.title}
                                     class="market-img"
                                     widths={[400]}
