@@ -184,3 +184,111 @@ h1 {
         padding: 2rem 0;
     }
 }
+
+/* --- Markdown Lists (Bullet & Numbered) --- */
+.main-content ul,
+.main-content ol {
+    margin: 1.5rem 0 1.5rem 2.2rem;
+    padding-left: 0;
+}
+
+.main-content ul {
+    list-style: none;
+    /* Use a clean custom bullet design */
+}
+
+.main-content ul li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.8;
+    color: #475569;
+}
+
+/* Custom modern dot styled with primary color */
+.main-content ul li::before {
+    content: "•";
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 1.4rem;
+    position: absolute;
+    left: 0;
+    top: -0.15rem;
+}
+
+.main-content ol {
+    list-style-type: decimal;
+}
+
+.main-content ol li {
+    margin-bottom: 0.8rem;
+    padding-left: 0.4rem;
+    line-height: 1.8;
+    color: #475569;
+}
+
+/* Highlight strong text inside lists */
+.main-content li strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* --- Markdown Tables --- */
+.main-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2.5rem 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--glass-border);
+    background: #ffffff;
+}
+
+.main-content th {
+    background: linear-gradient(135deg, #cc0000, #b30000);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 1.1rem 1.25rem;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.main-content td {
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--glass-border);
+    color: #475569;
+    vertical-align: middle;
+}
+
+.main-content tr:last-child td {
+    border-bottom: none;
+}
+
+/* Subtle alternating row colors using a very light primary wash */
+.main-content tr:nth-child(even) td {
+    background-color: rgba(204, 0, 0, 0.015);
+}
+
+/* Soft transition hover effect */
+.main-content tr {
+    transition: background-color 0.2s ease;
+}
+
+.main-content tr:hover td {
+    background-color: rgba(204, 0, 0, 0.035);
+}
+
+/* Responsive wrapper styling so tables scroll on mobile */
+@media (max-width: 768px) {
+    .main-content table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
