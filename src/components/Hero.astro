@@ -4,6 +4,7 @@ import '../styles/hero.css';
 import TrendingArticlesSidebar from './TrendingArticlesSidebar.astro';
 import { resolveArticleImage, getCategorySlug } from '../utils/imageResolver';
 import { Image } from 'astro:assets';
+import Newsletter from './Newsletter.astro';
 
 // 1. Fetch data
 const articles = await getCollection('articles');
@@ -72,18 +73,8 @@ const mainFeatured = featuredFArticles[0];
             <!-- RIGHT SIDE: TRENDING & NEWSLETTER -->
             <aside class="sidebar">
                 <TrendingArticlesSidebar />
-
-
-                <div class="widget newsletter-widget">
-                    <h3>Intelligence Report</h3>
-                    <p>Get weekly alpha on income streams delivered to your inbox.</p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Enter your email" required />
-                        <button type="submit">SUBSCRIBE</button>
-                    </form>
-                </div>
+                <Newsletter />
             </aside>
-
         </div>
     </div>
 </section>

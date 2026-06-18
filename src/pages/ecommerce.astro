@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
 import { resolveArticleImage, getCategorySlug } from '../utils/imageResolver';
+import Newsletter from '../components/Newsletter.astro';
 
 // CSS Imports matching Home Page styling
 import '../styles/homepage.css';
@@ -155,14 +156,7 @@ const marketArticles = sortArticles(
                         </div>
                     </div>
 
-                    <div class="widget newsletter-widget">
-                        <h3>Intelligence Report</h3>
-                        <p>Get weekly alpha on income streams delivered to your inbox.</p>
-                        <form class="newsletter-form">
-                            <input type="email" placeholder="Enter your email" required />
-                            <button type="submit">SUBSCRIBE</button>
-                        </form>
-                    </div>
+                    <Newsletter />
                 </aside>
             </div>
         </div>

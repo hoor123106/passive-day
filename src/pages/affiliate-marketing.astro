@@ -13,6 +13,7 @@ import '../styles/latest-real-estate.css';
 import '../styles/latest-articles.css';
 import '../styles/market-analysis.css';
 import '../styles/cta.css';
+import Newsletter from '../components/Newsletter.astro';
 
 // 1. Fetch data
 const allArticles = await getCollection('articles');
@@ -155,14 +156,7 @@ const marketArticles = sortArticles(
                             ))}
                         </div>
                     </div>
-                    <div class="widget newsletter-widget">
-                        <h3>Intelligence Report</h3>
-                        <p>Get weekly alpha on income streams delivered to your inbox.</p>
-                        <form class="newsletter-form">
-                            <input type="email" placeholder="Enter your email" required />
-                            <button type="submit">SUBSCRIBE</button>
-                        </form>
-                    </div>
+                    <Newsletter />
                 </aside>
             </div>
         </div>

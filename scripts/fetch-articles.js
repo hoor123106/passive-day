@@ -6,6 +6,34 @@ import { parse } from "csv-parse/sync";
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1_eh1ea10_SzEjvGxHodMpazEegdIorsrmfGwJsIpdfg/export?format=csv&gid=0";
 
+const SHORTCODE_REGEX = /\[\#\$(\w+)\]/gi;
+
+const SHORTCODE_MAP = {
+  NEWSLETTER: "Newsletter",
+};
+
+function processShortcodes(str) {
+  const usedComponents = new Set();
+
+  const body = str.replace(SHORTCODE_REGEX, (match, name) => {
+    const componentName = SHORTCODE_MAP[name.toUpperCase()];
+
+    if (!componentName) {
+      console.warn(`⚠️ Unknown shortcode: ${match}`);
+      return "";
+    }
+
+    usedComponents.add(componentName);
+    return `<${componentName} />`;
+  });
+
+  const imports = [...usedComponents]
+    .map((c) => `import ${c} from '../../components/${c}.astro';`)
+    .join("\n");
+
+  return { body, imports };
+}
+
 function sanitizeContent(str) {
   if (!str) return "";
 
@@ -106,9 +134,14 @@ async function fetchAndGenerate() {
 
     mdxContent += `---\n\n`;
 
-    const body = getVal(["content", "body"]) || "";
+    const rawBody = getVal(["content", "body"]) || "";
+    const { body, imports } = processShortcodes(sanitizeContent(rawBody));
 
-    mdxContent += sanitizeContent(body);
+    if (imports) {
+      mdxContent += `${imports}\n\n`;
+    }
+
+    mdxContent += body;
 
     const filePath = path.join(contentDir, `${slug}.mdx`);
 

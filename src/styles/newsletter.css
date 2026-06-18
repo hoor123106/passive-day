@@ -1,0 +1,99 @@
+.widget {
+  border-radius: 24px;
+  padding: 40px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Newsletter Widget */
+.newsletter-widget {
+  background: #cc0000;
+  /* Solid red from image */
+  color: #fff;
+  box-shadow: 0 20px 40px rgba(204, 0, 0, 0.2);
+}
+
+/* Decorative circles for newsletter widget */
+.newsletter-widget::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -20px;
+  width: 130px;
+  height: 130px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.newsletter-widget::after {
+  content: "";
+  position: absolute;
+  bottom: 20%;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+}
+
+.newsletter-widget h3 {
+  font-size: 21px;
+  margin-bottom: 16px;
+  color: #fff;
+  position: relative;
+  z-index: 2;
+  font-weight: 700;
+}
+
+.newsletter-widget p {
+  font-size: 15px;
+  opacity: 0.9;
+  margin-bottom: 32px;
+  line-height: 1.5;
+  position: relative;
+  z-index: 2;
+}
+
+.newsletter-form {
+  position: relative;
+  z-index: 2;
+}
+
+.newsletter-form input {
+  width: 100%;
+  padding: 18px;
+  border-radius: 14px;
+  border: none;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.15);
+  /* Darker overlay for input */
+  color: #fff;
+  font-size: 15px;
+  transition: background 0.3s;
+}
+
+.newsletter-form input:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.newsletter-form input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.newsletter-form button {
+  width: 100%;
+  padding: 18px;
+  border-radius: 14px;
+  border: none;
+  background: #fff;
+  color: #cc0000;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
