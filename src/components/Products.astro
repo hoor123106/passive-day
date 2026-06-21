@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import "../styles/products.css";
+
+// IDs passed from shortcode, e.g. "1,3,5"
+const ids = Astro.props.ids?.split(',').map(i => i.trim()) ?? [];
+
+// Load the whole products collection (each product is a separate MDX file)
+const allProducts = await getCollection('products');
+
+// Filter: keep only rows whose publishId matches the requested IDs (or all if none)
+let filtered = allProducts.filter(p => {
+  const meta = p.data;
+  const idMatch = ids.length === 0 || ids.includes(meta.publishId);
+  // If you have a separate "publish" column, replace the line below with:
+  // const isPublished = String(meta.publish).toUpperCase() === 'Y';
+  const isPublished = true; // treat all rows as published for now
+  return idMatch && isPublished;
+});
+
+// Sort by the Order field (numeric, ascending) so the smallest order appears first
+filtered.sort((a, b) => Number(a.data.order) - Number(b.data.order));
+---
+<div class="product-grid">
+  {filtered.map(product => (
+    <article class="product-card" key={product.data.publishId}>
+      <div class="product-info">
+        <h3 class="product-title">{product.data.name}</h3>
+        <p class="product-desc">{product.data.description}</p>
+      </div>
+      <a href={product.data.buttonLink} class="product-cta">
+        {product.data.buttonText}
+      </a>
+    </article>
+  ))}
+</div>
+

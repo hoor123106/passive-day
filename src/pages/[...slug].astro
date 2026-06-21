@@ -24,7 +24,9 @@ export async function getStaticPaths() {
 }
 
 const { article } = Astro.props;
-const { Content } = await render(article);
+const renderResult = await render(article);
+console.log("DEBUG RENDER RESULT FOR:", article.id, renderResult);
+const { Content } = renderResult;
 const allArticles = await getCollection('articles');
 
 const featuredImage = resolveArticleImage(article.data["Image Featured"] || article.data.Image);
